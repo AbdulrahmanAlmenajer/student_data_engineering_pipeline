@@ -54,19 +54,6 @@ def clean_students(df: pd.DataFrame) -> pd.DataFrame:
 
     logger.info("Numeric columns converted")
 
-    # Remove duplicate records
-    before_duplicates = len(df)
-
-    df = df.drop_duplicates()
-
-    duplicates_removed = (
-        before_duplicates - len(df)
-    )
-
-    logger.info(
-        "Duplicates removed: %d",
-        duplicates_removed
-    )
 
     logger.info(
         "Data cleaning completed: %d rows",

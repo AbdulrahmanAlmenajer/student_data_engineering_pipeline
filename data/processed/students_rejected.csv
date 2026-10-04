@@ -1,0 +1,13 @@
+student_id,name,age,gpa,attendance,city,rejection_reason
+1003.0,Ali,,2.9,75.0,Ibb,invalid age
+1004.0,Sara,20.0,,97.0,Sanaa,invalid gpa
+1005.0,Omar,22.0,3.2,,Dhamar,duplicate student_id; invalid attendance
+1006.0,,24.0,3.1,82.0,Sanaa,missing name
+1007.0,Hassan,,3.7,91.0,Taiz,invalid age
+1008.0,Fatima,19.0,4.2,95.0,Ibb,invalid gpa
+1009.0,Salem,25.0,-1.0,105.0,Sanaa,invalid gpa; invalid attendance
+1010.0,Yousef,21.0,3.4,89.0,,missing city
+1005.0,Omar,22.0,3.2,,Dhamar,duplicate student_id; invalid attendance
+1012.0,Mona,,3.8,93.0,Taiz,invalid age
+,Ahmed,22.0,3.5,92.0,Sanaa,missing student_id
+1016.0,Rami,,,,Ibb,invalid age; invalid gpa; invalid attendance
