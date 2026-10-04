@@ -21,6 +21,9 @@ def main():
     valid_df, rejected_df = validate_students(
         cleaned_df
     )
+    valid_df = valid_df.drop(
+        columns=["rejection_reason"]
+    )
     save_csv(
         valid_df,
         "data/processed/students_valid.csv"
