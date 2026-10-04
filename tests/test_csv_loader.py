@@ -8,8 +8,14 @@ def test_load_csv():
 
     df = load_csv(file_path)
 
+    required_columns = {
+        "student_id",
+        "name",
+        "age",
+        "gpa",
+        "attendance",
+        "city",
+    }
+
     assert not df.empty
-    assert len(df) == 5
-    assert "student_id" in df.columns
-    assert "name" in df.columns
-    assert "gpa" in df.columns
+    assert set(required_columns).issubset(df.columns)

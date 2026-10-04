@@ -1,6 +1,19 @@
 student_id,name,age,gpa,attendance,city
-1001,Ahmed,22,3.5,92,Sanaa
+1001, Ahmed ,22,3.5,92,Sanaa
 1002,Mohammed,21,3.8,88,Taiz
-1003,Ali,23,2.9,75,Ibb
-1004,Sara,20,3.9,97,Sanaa
-1005,Omar,22,3.2,81,Dhamar
+1003,Ali,,2.9,75,Ibb
+1004,Sara,20,,97,Sanaa
+1005,Omar,22,3.2,,Dhamar
+1006,,24,3.1,82,Sanaa
+1007,Hassan,abc,3.7,91,Taiz
+1008,Fatima,19,4.2,95,Ibb
+1009,Salem,25,-1,105,Sanaa
+1010,Yousef,21,3.4,89,
+1005,Omar,22,3.2,,Dhamar
+1011,  Khaled  , 23 , 3.6 , 90 ,  Sanaa
+1012,Mona,twenty,3.8,93,Taiz
+,Ahmed,22,3.5,92,Sanaa
+1014,Nour,20,3.9,97, Sanaa
+1015,Ali,18,3.0,65,Unknown
+1016,Rami,, , ,Ibb
+1017,Salma,21,3.7,88,Sanaa
