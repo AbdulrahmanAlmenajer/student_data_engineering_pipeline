@@ -1,26 +1,35 @@
-# Virtual Environment
+# Virtual environment
 .venv/
 venv/
+env/
 
-# Python
+# Python cache
 __pycache__/
 *.py[cod]
 
-# Environment variables
-.env
-
-# SQLite database
-*.db
-
-# Logs
-*.log
+# Pytest
+.pytest_cache/
 
 # IDE
 .idea/
 .vscode/
 
-# OS
+# Environment variables
+.env
+.env.*
+
+# Logs
+*.log
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated pipeline output
+data/processed/
+data/database/
+
+# OS files
 .DS_Store
 Thumbs.db
-# Processed data
-data/processed/
