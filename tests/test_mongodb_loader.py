@@ -89,3 +89,22 @@ def test_mongodb_data_quality_report():
         )
 
     assert len(df) > 0
+
+
+def test_mongodb_schema():
+    df = load_mongodb(
+        "mongodb://localhost:27017/",
+        "Universty_Genius",
+        "student",
+    )
+
+    expected_columns = [
+        "student_id",
+        "name",
+        "age",
+        "gpa",
+        "attendance",
+        "city",
+    ]
+
+    assert list(df.columns) == expected_columns
