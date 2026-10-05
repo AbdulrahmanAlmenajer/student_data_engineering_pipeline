@@ -30,12 +30,12 @@ def test_merge_student_data():
 
     combined_valid, combined_rejected = merge_student_data(
         valid_dataframes=[
-            valid_1,
-            valid_2,
+            ("csv", valid_1),
+            ("mongodb", valid_2),
         ],
         rejected_dataframes=[
-            rejected_1,
-            rejected_2,
+            ("csv", rejected_1),
+            ("mongodb", rejected_2),
         ],
     )
 
@@ -56,3 +56,39 @@ def test_merge_student_data():
         1003,
         1008,
     ]
+def test_merge_student_data_source_priority():
+
+    csv_df = pd.DataFrame({
+        "student_id": [1001],
+        "name": ["Ahmed CSV"],
+    })
+
+    api_df = pd.DataFrame({
+        "student_id": [1001],
+        "name": ["Ahmed API"],
+    })
+
+    mongodb_df = pd.DataFrame({
+        "student_id": [1001],
+        "name": ["Ahmed MongoDB"],
+    })
+
+    postgres_df = pd.DataFrame({
+        "student_id": [1001],
+        "name": ["Ahmed PostgreSQL"],
+    })
+
+    combined_valid, combined_rejected = merge_student_data(
+        valid_dataframes=[
+            ("csv", csv_df),
+            ("api", api_df),
+            ("mongodb", mongodb_df),
+            ("postgresql", postgres_df),
+        ],
+        rejected_dataframes=[],
+    )
+
+    assert len(combined_valid) == 1
+    assert len(combined_rejected) == 0
+
+    assert combined_valid.loc[0, "name"] == "Ahmed PostgreSQL"
