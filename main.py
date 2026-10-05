@@ -1,51 +1,92 @@
-from src.load.sqlite_loader import load_to_sqlite
-from src.load.csv_writer import save_csv
+
 from src.extract.csv_loader import load_csv
+from src.extract.mongodb_loader import load_mongodb
+from src.transform.merge import merge_student_data
 from src.logger import logger
-from src.transform.clean import clean_students
-from src.transform.validate import validate_students
+
+from src.pipeline import process_students
+
+from src.load.csv_writer import save_csv
+from src.load.sqlite_loader import load_to_sqlite
+
+import pandas as pd
 
 
 def main():
-    logger.info("Starting student data pipeline")
 
-    # Extract
-    df = load_csv(
+    logger.info(
+        "Starting student data pipeline"
+    )
+
+
+    csv_df = load_csv(
         "data/raw/students.csv"
     )
 
-    # Clean
-    cleaned_df = clean_students(df)
 
-    # Validate
-    valid_df, rejected_df = validate_students(
-        cleaned_df
+    mongodb_df = load_mongodb(
+        "mongodb://localhost:27017/",
+        "Universty_Genius",
+        "student",
     )
-    valid_df = valid_df.drop(
+
+
+    csv_valid, csv_rejected = process_students(
+        csv_df
+    )
+
+
+    mongo_valid, mongo_rejected = process_students(
+        mongodb_df
+    )
+
+    combined_valid, combined_rejected = merge_student_data(
+        valid_dataframes=[
+            csv_valid,
+            mongo_valid,
+        ],
+        rejected_dataframes=[
+            csv_rejected,
+            mongo_rejected,
+        ],
+    )
+
+    combined_valid = combined_valid.drop(
         columns=["rejection_reason"]
     )
+
     save_csv(
-        valid_df,
+        combined_valid,
         "data/processed/students_valid.csv"
     )
 
+
+
     save_csv(
-        rejected_df,
+        combined_rejected,
         "data/processed/students_rejected.csv"
     )
+
+
+
     load_to_sqlite(
-        valid_df,
+        combined_valid,
         "data/database/students.db"
     )
 
-    print("\n===== VALID DATA =====")
-    print(valid_df)
 
-    print("\n===== REJECTED DATA =====")
-    print(rejected_df)
+
+    print("\n===== COMBINED VALID DATA =====")
+    print(combined_valid)
+
+    print("\n===== COMBINED REJECTED DATA =====")
+    print(combined_rejected)
 
     logger.info(
-        "Pipeline completed successfully"
+        "Pipeline completed successfully: "
+        "%d valid, %d rejected",
+        len(combined_valid),
+        len(combined_rejected)
     )
 
 

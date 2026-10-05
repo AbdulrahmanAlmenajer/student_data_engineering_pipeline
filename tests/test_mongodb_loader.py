@@ -108,3 +108,24 @@ def test_mongodb_schema():
     ]
 
     assert list(df.columns) == expected_columns
+
+def test_mongodb_clean_and_validate():
+    df = load_mongodb(
+        "mongodb://localhost:27017/",
+        "Universty_Genius",
+        "student",
+    )
+
+    cleaned_df = clean_students(df)
+
+    valid_df, rejected_df = validate_students(
+        cleaned_df
+    )
+
+    assert len(cleaned_df) == 10
+
+    assert len(valid_df) == 1
+
+    assert len(rejected_df) == 9
+
+    assert "rejection_reason" in rejected_df.columns
