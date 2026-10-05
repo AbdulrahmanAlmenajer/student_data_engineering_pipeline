@@ -3,13 +3,11 @@ from src.extract.csv_loader import load_csv
 from src.extract.mongodb_loader import load_mongodb
 from src.transform.merge import merge_student_data
 from src.logger import logger
-
+from src.extract.api_loader import extract_api
 from src.pipeline import process_students
 
 from src.load.csv_writer import save_csv
 from src.load.sqlite_loader import load_to_sqlite
-
-import pandas as pd
 
 
 def main():
@@ -29,7 +27,9 @@ def main():
         "Universty_Genius",
         "student",
     )
-
+    api_df = extract_api(
+        "http://localhost:8000/api/students"
+    )
 
     csv_valid, csv_rejected = process_students(
         csv_df
@@ -38,6 +38,9 @@ def main():
 
     mongo_valid, mongo_rejected = process_students(
         mongodb_df
+    )
+    api_valid, api_rejected = process_students(
+        api_df
     )
 
     combined_valid, combined_rejected = merge_student_data(
