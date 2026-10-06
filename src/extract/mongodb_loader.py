@@ -1,5 +1,6 @@
 import pandas as pd
 from pymongo import MongoClient
+from pymongo.errors import PyMongoError
 
 from src.logger import logger
 
@@ -20,9 +21,10 @@ def load_mongodb(
         collection_name
     )
 
-    client = MongoClient(uri)
+    client = None
 
     try:
+        client = MongoClient(uri)
         collection = client[
             database_name
         ][
@@ -71,9 +73,24 @@ def load_mongodb(
 
         return df
 
-    finally:
-        client.close()
-
-        logger.info(
-            "MongoDB connection closed"
+    except PyMongoError as e:
+        logger.error(
+            "MongoDB error: %s",
+            e,
         )
+        raise
+
+    except Exception as e:
+        logger.error(
+            "Error extracting MongoDB: %s",
+            e,
+        )
+        raise
+
+    finally:
+        if client is not None:
+            client.close()
+
+            logger.info(
+                "MongoDB connection closed"
+            )
