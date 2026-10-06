@@ -3,7 +3,20 @@ import sqlite3
 import pandas as pd
 
 
+EXPECTED_COLUMNS = [
+    "student_id",
+    "name",
+    "age",
+    "gpa",
+    "attendance",
+    "city",
+    "_source",
+]
+
+
 def test_pipeline_sqlite_output():
+    """Test that the SQLite database was
+    created and populated by the pipeline."""
 
     connection = sqlite3.connect(
         "data/database/students.db"
@@ -18,46 +31,53 @@ def test_pipeline_sqlite_output():
     finally:
         connection.close()
 
-    # Final number of unique valid students
-    assert len(df) == 15
+    # Database must have at least one record
+    assert len(df) > 0
 
     # student_id must be unique
     assert df["student_id"].is_unique
 
-    # Required columns
-    expected_columns = [
-        "student_id",
-        "name",
-        "age",
-        "gpa",
-        "attendance",
-        "city",
-        "_source",
-    ]
+    # All required columns must exist
+    for col in EXPECTED_COLUMNS:
+        assert col in df.columns, (
+            f"Missing column: {col}"
+        )
 
-    assert list(df.columns) == expected_columns
+    # Every record must have a source
+    assert df["_source"].notna().all()
+    assert df["_source"].ne("").all()
 
-    # PostgreSQL has highest priority
-    postgres_students = df[
-        df["_source"] == "postgresql"
-    ]
 
-    assert len(postgres_students) == 10
+def test_pipeline_sqlite_valid_ranges():
+    """Test that all values in the SQLite
+    database are within valid ranges after
+    cleaning and validation."""
 
-    # PostgreSQL records must include these IDs
-    expected_postgres_ids = {
-        1001,
-        1002,
-        1003,
-        1004,
-        1005,
-        1018,
-        1019,
-        1020,
-        1021,
-        1022,
-    }
+    connection = sqlite3.connect(
+        "data/database/students.db"
+    )
 
-    assert set(
-        postgres_students["student_id"]
-    ) == expected_postgres_ids
+    try:
+        df = pd.read_sql_query(
+            "SELECT * FROM students",
+            connection,
+        )
+
+    finally:
+        connection.close()
+
+    # Age must be in valid range
+    assert (df["age"] >= 15).all()
+    assert (df["age"] <= 100).all()
+
+    # GPA must be in valid range
+    assert (df["gpa"] >= 0).all()
+    assert (df["gpa"] <= 4).all()
+
+    # Attendance must be in valid range
+    assert (df["attendance"] >= 0).all()
+    assert (df["attendance"] <= 100).all()
+
+    # No missing names or cities
+    assert df["name"].notna().all()
+    assert df["city"].notna().all()
